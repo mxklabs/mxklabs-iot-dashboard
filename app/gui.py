@@ -31,20 +31,34 @@ class Gui(tkinter.Tk):
         self.logo_panel = tkinter.PanedWindow(self, bg='black')
         self.logo_panel.place(x=700, y=0, width=100, height=50)
 
-        self.mxklabs_logo1 = tkinter.Label(self.logo_panel, padx=0, text="mxk", font=self._logo_font, fg='#008888', bg='black')
+        self.mxklabs_logo1 = tkinter.Label(self.logo_panel, padx=0,
+            text="mxk", font=self._logo_font, fg='#008888', bg='black')
         self.mxklabs_logo1.pack(side=tkinter.LEFT)
 
-        self.mxklabs_logo2 = tkinter.Label(self.logo_panel, padx=0, text="labs", font=self._logo_font, fg='#cccccc', bg='black')
+        self.mxklabs_logo2 = tkinter.Label(self.logo_panel, padx=0,
+            text="labs", font=self._logo_font, fg='#cccccc', bg='black')
         self.mxklabs_logo2.pack(side=tkinter.LEFT)
 
-        self.this_hour_button = tkinter.Button(self, text="HOUR",
-            command=lambda : self._core.set_mode(intcore.THIS_HOUR))
-        self.this_hour_button.place(x=700, y=50, width=100, height=50)
+        self._hour_view_button = tkinter.Button(self, text="HOUR\nVIEW",
+            command=lambda : self._core.set_mode(intcore.HOUR_VIEW))
+        self._hour_view_button.place(x=700, y=80, width=100, height=50)
 
-        self.prev_hour_button = tkinter.Button(self, text="(HOUR AGO)",
-            command=lambda : self._core.set_mode(intcore.PREV_HOUR))
-        self.prev_hour_button.place(x=700, y=100, width=100, height=50)
+        self._day_view_button = tkinter.Button(self, text="DAY\nVIEW",
+            command=lambda : self._core.set_mode(intcore.DAY_VIEW))
+        self._day_view_button.place(x=700, y=140, width=100, height=50)
 
+        self._week_view_button = tkinter.Button(self, text="WEEK\nVIEW",
+            command=lambda : self._core.set_mode(intcore.WEEK_VIEW))
+        self._week_view_button.place(x=700, y=200, width=100, height=50)
+
+        self._month_view_button = tkinter.Button(self, text="MONTH\nVIEW",
+            command=lambda : self._core.set_mode(intcore.MONTH_VIEW))
+        self._month_view_button.place(x=700, y=260, width=100, height=50)
+
+        self._year_view_button = tkinter.Button(self, text="YEAR\nVIEW",
+            command=lambda : self._core.set_mode(intcore.YEAR_VIEW))
+        self._year_view_button.place(x=700, y=320, width=100, height=50)
+        
         self.figure = Figure(figsize=(6,4))
         self.ax1 = self.figure.add_subplot(111)
         self.ax2 = self.ax1.twinx()
@@ -100,7 +114,7 @@ class Gui(tkinter.Tk):
         now = self._plot_update['now'].replace(minute=0, second=0, microsecond=0)
 
         # Update button text.
-        #self.this_hour_button.config(text="" + \
+        #self._hour_view_button.config(text="" + \
         #    (now).strftime("%H:%M") + " - " + \
         #    (now + datetime.timedelta(hours=1)).strftime("%H:%M") + "")
 

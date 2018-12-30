@@ -6,8 +6,11 @@ import threading
 
 import mxklabs.data
 
-THIS_HOUR = 'this-hour'
-PREV_HOUR = 'prev-hour'
+HOUR_VIEW = 'hour'
+DAY_VIEW = 'day'
+WEEK_VIEW = 'week'
+MONTH_VIEW = 'month'
+YEAR_VIEW = 'year'
 
 TIMESTAMP_FMT = "%Y/%m/%d %H:%M:%S"
 
@@ -71,7 +74,7 @@ class Core(object):
 
     def __init__(self):
         self._gui = None
-        self._mode = THIS_HOUR
+        self._mode = HOUR_VIEW
 
         self._thread = threading.Thread(target=self._run)
         self._stop_event = threading.Event()
@@ -141,12 +144,8 @@ class Core(object):
         if self._gui:
             now = datetime.datetime.utcnow()
 
-            if self._mode == THIS_HOUR or self._mode == PREV_HOUR:
-                if self._mode == THIS_HOUR:
-                    start = now.replace(minute=0, second=0, microsecond=0)
-                elif self._mode == PREV_HOUR:
-                    start = now.replace(minute=0, second=0, microsecond=0) - datetime.timedelta(hours=1)
-
+            if self._mode == HOUR_VIEW:
+                start = now.replace(minute=0, second=0, microsecond=0)
                 end = start + datetime.timedelta(hours=1)
                 title = start.strftime("%d/%m/%y %H:00") + " - " + \
                         end.strftime("%H:00")
