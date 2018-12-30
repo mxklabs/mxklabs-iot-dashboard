@@ -116,6 +116,7 @@ class Core(object):
 
     def set_mode(self, mode):
         self._mode = mode
+        self._update()
 
     def set_gui(self, gui):
         self._gui = gui
@@ -140,12 +141,18 @@ class Core(object):
         if self._gui:
             now = datetime.datetime.utcnow()
 
-            if self._mode == THIS_HOUR:
-                start = now.replace(minute=0, second=0, microsecond=0)
+            if self._mode == THIS_HOUR or self._mode == PREV_HOUR:
+                if self._mode == THIS_HOUR:
+                    start = now.replace(minute=0, second=0, microsecond=0)
+                elif self._mode == PREV_HOUR:
+                    start = now.replace(minute=0, second=0, microsecond=0) - datetime.timedelta(hours=1)
+
                 end = start + datetime.timedelta(hours=1)
-                title = now.strftime("%d/%m/%y %H:00") + " - " +\
-                        (now + datetime.timedelta(hours=1)).strftime("%H:00")
+                title = start.strftime("%d/%m/%y %H:00") + " - " + \
+                        end.strftime("%H:00")
                 timeout = datetime.timedelta(minutes=1)
+                x_ticks = [start + datetime.timedelta(minutes=m) for m in range(0,65,5)]
+                x_ticklabels = [dt.strftime("%H:%M") for dt in x_ticks]
 
             humidity_records = self._buf_hum_min.records()
             humidity_records = [r for r in humidity_records if r[0] >= start and r[0] < end]
@@ -156,12 +163,15 @@ class Core(object):
             temperature_records = self._add_timeouts(temperature_records, timeout)
 
             self._gui.update_plot(**{
+                'now' : now,
                 'x_humidity' : [r[0] for r in humidity_records],
                 'y_humidity' : [r[1] for r in humidity_records],
                 'x_temperature' : [r[0] for r in temperature_records],
                 'y_temperature' : [r[1] for r in temperature_records],
                 'title' : title,
-                'x_lim' : (start, end)
+                'x_lim' : (start, end),
+                'x_ticks' : x_ticks,
+                'x_ticklabels': x_ticklabels
             })
 
 
