@@ -64,7 +64,8 @@ TIMEBASE_CONFIG = \
 }
 
 def make_filename(serie, timebase):
-    return os.path.join('..', 'data', '{}.{}'.format(serie, timebase))
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)), '..',
+                        'data', '{}.{}'.format(serie, timebase))
 
 def aggregate_avg(data):
     return sum(data) / len(data)
