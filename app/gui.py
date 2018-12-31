@@ -143,13 +143,28 @@ class Gui(tkinter.Tk):
 
         self.ax1.set_title(self._plot_update['title'], fontsize=16, color='white')
 
-        p1 = self.ax1.plot(self._plot_update['x_humidity'],
-                               self._plot_update['y_humidity'],
-                               color='#008888')
+        plots = [(self.ax1, 'humidity', '#008888'), (self.ax1, 'temperature', '#cccccc')]
 
-        p2 = self.ax2.plot(self._plot_update['x_temperature'],
-                      self._plot_update['y_temperature'],
-                      color='#cccccc')
+        for plot in plots:
+            ax = plot[0]
+            colour = plot[2]
+
+            x = self._plot_update['x_{}'.format(plot[1])]
+            y = self._plot_update['y_{}'.format(plot[1])]
+
+            if (len(y) > 0 and isinstance(y[0],float)):
+                p1 = ax.plot(x, y, color=colour)
+            else:
+                ymin = [i[0] for i in y]
+                ymax = [i[1] for i in y]
+                p1_min = ax.plot(x, ymax, color=colour)
+                p1_max = ax.plot(x, ymin, color=colour, linestyle='dashed', dashes=[1,1])
+
+                start_indexes = [0] + [i + 1 for i in range(len(x)) if ymin[i] is None]
+                end_indexes = [i for i in range(len(x)) if ymin[i] is None] + [len(x)]
+
+                for x1, x2 in zip(start_indexes, end_indexes):
+                     ax.fill_between(x[x1:x2], y1=ymin[x1:x2], y2=ymax[x1:x2], facecolor=colour, alpha=0.3)
 
         self.ax1.set_ylim((0,100))
         self.ax1.set_yticks(range(0,110,10))
@@ -160,9 +175,6 @@ class Gui(tkinter.Tk):
         #self.ax1.xaxis.set_major_locator(matplotlib.dates.DayLocator())
 
         self.ax1.set_xlim(self._plot_update['x_lim'])
-
-
-
         self.ax1.grid(b=True, color='#222222')
 
         self.ax1.set_xticks(self._plot_update['x_ticks'])
