@@ -261,6 +261,8 @@ class Core(object):
                 tick_fmt = "%H:%M"
                 timebase = MINUTE
 
+                title = start.strftime("Today (@%H:%M) to Now")
+
             if self._mode == DAY_VIEW:
                 start = now - datetime.timedelta(days=1) #.replace(hour=0, minute=0, second=0, microsecond=0)
                 end = now
@@ -268,6 +270,7 @@ class Core(object):
                 start_tick = start.replace(hour=(start.hour // 2) * 2, minute=0, second=0, microsecond=0) + datetime.timedelta(hours=2)
                 tick_fmt = "%H:%M"
                 timebase = QUARTER_OF_HOUR
+                title = start.strftime("Yesterday (@%H:%M) to Now")
 
             if self._mode == WEEK_VIEW:
                 start = now - datetime.timedelta(days=7) #.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -276,17 +279,26 @@ class Core(object):
                 start_tick = start.replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
                 tick_fmt = "%d/%m"
                 timebase = HOUR
+                title = start.strftime("Last %A (@%H:%M) to Now")
 
             if self._mode == MONTH_VIEW:
-                start = now - datetime.timedelta(days=30) #.replace(hour=0, minute=0, second=0, microsecond=0)
+                start = now - datetime.timedelta(days=28)
+                while start.day != now.day:
+                    start = start - datetime.timedelta(days=1)
                 end = now
                 tick_interval_fun = lambda dt: dt + datetime.timedelta(days=3)
                 start_tick = start.replace(day=((start.day - 1) // 3) * 3 + 1, hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(days=3)
                 tick_fmt = "%d/%m"
                 timebase = DAY
+                if (start.year == end.year):
+                    title = start.strftime("%-d/%b to Now")
+                else:
+                    title = start.strftime("%-d/%b/%y to Now")
 
             if self._mode == YEAR_VIEW:
-                start = now - datetime.timedelta(days=366) #.replace(hour=0, minute=0, second=0, microsecond=0)
+                start = now - datetime.timedelta(days=365) #.replace(hour=0, minute=0, second=0, microsecond=0)
+                while start.day != now.day:
+                    start = start - datetime.timedelta(days=1)
                 end = now
                 def tick_interval_fun(dt):
                     dt2 = dt + datetime.timedelta(days=1)
@@ -297,6 +309,10 @@ class Core(object):
                 start_tick = tick_interval_fun(start.replace(day=1, hour=0, minute=0, second=0, microsecond=0))
                 tick_fmt = "%b"
                 timebase = DAY
+                if (start.year == end.year):
+                    title = start.strftime("%-d/%b to Now")
+                else:
+                    title = start.strftime("%-d/%b/%y to Now")
 
             x_ticks = [start_tick]
             while tick_interval_fun(x_ticks[-1]) < end:
@@ -304,9 +320,6 @@ class Core(object):
             x_ticklabels = [dt.strftime(tick_fmt) for dt in x_ticks]
 
             timeout = TIMEBASE_CONFIG[timebase]['timeout']
-
-            title = start.strftime("%d/%m/%y %H:%M") + " - " + \
-                    end.strftime("%d/%m/%y %H:%M")
 
             humidity_records = self._buffers[HUMIDITY + timebase].records()
             humidity_records = [r for r in humidity_records if r[0] >= start and r[0] < end]
