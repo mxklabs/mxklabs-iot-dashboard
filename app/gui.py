@@ -1,5 +1,6 @@
 import datetime
 import matplotlib
+import os
 import tkinter
 
 import core as intcore
@@ -12,6 +13,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
 PLOT_AREA = [0.065, 0.115, 0.9, 0.8]
+
+def get_resource_filename(filename):
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)), '..',
+                        'resources', filename)
 
 class Gui(tkinter.Tk):
     def __init__(self, debug, core, *args, **kwargs):
@@ -40,32 +45,42 @@ class Gui(tkinter.Tk):
             text="labs", font=self._logo_font, fg='#cccccc', bg='black')
         self.mxklabs_logo2.pack(side=tkinter.LEFT)
 
-        self._hour_view_button = tkinter.Button(self, text="HOUR\nVIEW",
-            command=lambda : self._core.set_mode(intcore.HOUR_VIEW))
+        self.button_idle_image = tkinter.PhotoImage(
+            file=get_resource_filename("button_idle.png"))
+        self.button_selected_image = tkinter.PhotoImage(
+            file=get_resource_filename("button_selected.png"))
+
+        def make_button(text, view):
+            return tkinter.Button(self,
+               text=text,
+               command=lambda: self._core.set_mode(view),
+               image=self.button_idle_image,
+               compound=tkinter.CENTER,
+               foreground='#008888', activeforeground='white',
+               bg='black', activebackground='black',
+               bd=0, highlightthickness=0,
+               highlightcolor='white')
+
+        self._hour_view_button = make_button("HOUR", intcore.HOUR_VIEW)
         self._hour_view_button.place(x=700, y=80, width=100, height=50)
 
-        self._day_view_button = tkinter.Button(self, text="DAY\nVIEW",
-            command=lambda : self._core.set_mode(intcore.DAY_VIEW))
+        self._day_view_button = make_button("DAY", intcore.DAY_VIEW)
         self._day_view_button.place(x=700, y=140, width=100, height=50)
 
-        self._week_view_button = tkinter.Button(self, text="WEEK\nVIEW",
-            command=lambda : self._core.set_mode(intcore.WEEK_VIEW))
+        self._week_view_button = make_button("WEEK", intcore.WEEK_VIEW)
         self._week_view_button.place(x=700, y=200, width=100, height=50)
 
-        self._month_view_button = tkinter.Button(self, text="MONTH\nVIEW",
-            command=lambda : self._core.set_mode(intcore.MONTH_VIEW))
+        self._month_view_button = make_button("MONTH", intcore.MONTH_VIEW)
         self._month_view_button.place(x=700, y=260, width=100, height=50)
 
-        self._year_view_button = tkinter.Button(self, text="YEAR\nVIEW",
-            command=lambda : self._core.set_mode(intcore.YEAR_VIEW))
+        self._year_view_button = make_button("YEAR", intcore.YEAR_VIEW)
         self._year_view_button.place(x=700, y=320, width=100, height=50)
-        
+
         self.figure = Figure(figsize=(6,4))
         #self.figure.tight_layout()
         #self.ax1 = #self.figure.add_subplot(111)
         self.ax1 = self.figure.add_axes(PLOT_AREA)
         #self.ax2 = self.ax1.twinx()
-
 
         self.canvas = FigureCanvasTkAgg(self.figure, master=self)
         self.canvas.get_tk_widget().place(x=0, y=0, width=700, height=480)
@@ -86,6 +101,16 @@ class Gui(tkinter.Tk):
             self._have_plot_update = False
 
         self.after(200, self._periodic_call)
+
+    def _set_button_state(self, button, state):
+        if state:
+            button.config(image=self.button_selected_image,
+                          foreground='#000000', activeforeground='white',
+                          bg='black', activebackground='black')
+        else:
+            button.config(image=self.button_idle_image,
+                          foreground='#008888', activeforeground='white',
+                          bg='black', activebackground='black')
 
     def _update_plot(self):
         now = self._plot_update['now'].replace(minute=0, second=0, microsecond=0)
@@ -137,6 +162,15 @@ class Gui(tkinter.Tk):
             text.set_color("white")
         self.ax1.set_ylim((0,100))
         self.ax1.set_yticks(range(0,110,10))
+
+        mode = self._core.get_mode()
+
+        self._set_button_state(self._hour_view_button, mode == intcore.HOUR_VIEW)
+        self._set_button_state(self._day_view_button, mode == intcore.DAY_VIEW)
+        self._set_button_state(self._week_view_button, mode == intcore.WEEK_VIEW)
+        self._set_button_state(self._month_view_button, mode == intcore.MONTH_VIEW)
+        self._set_button_state(self._year_view_button, mode == intcore.YEAR_VIEW)
+
 
         #self.ax1.format_xdata = matplotlib.dates.DateFormatter('%H:%M')
         #self.ax2.format_xdata = matplotlib.dates.DateFormatter('%H:%M')

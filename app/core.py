@@ -227,6 +227,9 @@ class Core(object):
         self._mode = mode
         self._update()
 
+    def get_mode(self):
+        return self._mode
+
     def set_gui(self, gui):
         self._gui = gui
         self._update()
