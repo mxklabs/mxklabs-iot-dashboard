@@ -76,6 +76,18 @@ class Gui(tkinter.Tk):
         self._year_view_button = make_button("YEAR", intcore.YEAR_VIEW)
         self._year_view_button.place(x=700, y=320, width=100, height=50)
 
+        self._exit_button = tkinter.Button(self, 
+            text="EXIT", 
+            command=lambda:os._exit(0), 
+            #image=self.button_idle_image,
+            compound=tkinter.CENTER,
+            foreground='#008888', activeforeground='#008888',
+            bg='black', activebackground='black',
+            bd=0, highlightthickness=0,
+            highlightcolor='#008888')
+
+        self._exit_button.place(x=700, y=420, width=100, height=50)
+
         self.figure = Figure(figsize=(6,4))
         #self.figure.tight_layout()
         #self.ax1 = #self.figure.add_subplot(111)
