@@ -4,10 +4,13 @@ mxklabs - IoT Dashboard
 # Introduction
 
 This project implements a simple IoT dashboard on a Raspberry Pi (with touchscreen display), currently featuring relative humidity and temperature monitoring. Using the touch screen interface the user can view sensor readings over the last day, week, month or year. For larger time ranges values are plotted as a band, showing both the minimum and maximum extremes. 
+All sensor information is stored in file-backed buffers, meaning that data is not lost following power cycles.
 
 For context, the main reason I created this project was due to the purchase of an accoustic piano with strict warranty conditions on humidity in particular. This monitoring application allows me to verify I meet those conditions.
 
 ![Screenshot](assets/screenshot.png)
+
+**NOTE**: *This code is not production quality. I decided to share it in case it is useful to someone else.*
 
 # Installation
 
@@ -37,7 +40,7 @@ If this is not the case you find some basic guides
 [here](https://www.digikey.com/en/maker/blogs/raspberry-pi-3-how-to-configure-wi-fi-and-bluetooth/03fcd2a252914350938d8c5471cf3b63) and
 [here](https://thepihut.com/blogs/raspberry-pi-tutorials/45295044-raspberry-pi-7-touch-screen-assembly-guide).
 
-## Installing software dependencies
+## Setting up the Pi
 
 Our application requires [Python 3](https://www.python.org/downloads/) (already
 installed on [Raspbian Stretch](https://www.raspberrypi.org/downloads/raspbian/))
@@ -49,30 +52,25 @@ with some additional dependencies:
    sudo python3 -m pip install --upgrade six
    ```
 
-* Install dotmap (a library for dealing with dictionaries):
+* Install mxklab (our own python library which includes the implementation of a file-backed buffer):
 
    ```
-   sudo python3 -m pip install --upgrade dotmap
+   sudo python3 -m pip install --upgrade mxklabs
    ```
 
-* Install Cairo:
+* Install mxklab (our own python library which includes the implementation of a file-backed buffer):
 
    ```
-   sudo python3 -m pip install --upgrade cairocffi
+   sudo python3 -m pip install --upgrade mxklabs
    ```
-
-* Install the Google API Python client:
-
-   ```
-   sudo python3 -m pip install --upgrade google-api-python-client
-   ```
-
-* Install the TkInter imaging module:
+   
+* Install matplotlib (a library for plotting data):
 
    ```
-   sudo apt-get install python3-pil.imagetk
-   sudo apt-get install gir1.2-webkit-3.07
+   sudo python3 -m pip install --upgrade matplotlib
    ```
+
+**NOTE**: *This dependency list may be out of date. If you do try this please let me know either way!*
 
 ## Installing this software (mxklabs-pi-calendar)
 
@@ -80,28 +78,20 @@ The easiest way to install our this repository is to use git to clone the source
 code directly from the github repository:
 
 ```
-git clone https://github.com/mxklabs/mxklabs-pi-calendar.git
+git clone https://github.com/mxklabs/mxklabs-iot-dashboard.git
 ```
 
-This puts the source code in `/home/pi/mxklabs-pi-calendar`. Now, you should be able to
+This puts the source code in `/home/pi/mxklabs-iot-dashboard`. Now, you should be able to
 manually start the application as follows:
 
 ```
-python3 mxklabs-pi-calendar/main.py
+python3 mxklabs-iot-dashboard/app/main.py
 ```
-
-## Configuring mxklabs-pi software
-
-If you're planning to use the Google Calendar API feature then you'll need to
-download a `client_secret.json` to `/home/pi/mxklabs-pi-calendar/credentials/google-api/client_secret.json`
-(follow [this guide](https://developers.google.com/google-apps/calendar/quickstart/python)).
-Note that this application was developed to stay within Google's free tier
-quotas; there's no need to add a billing account.
 
 ## Post-Installation Tweaks
 
 * To turn your screen upside down add the line `rotate_lcd=2` to the top of `/boot/config.txt`.
-* To auto-start the application on startup add `@/usr/bin/python3 /home/pi/mxklabs-pi-calendar/main.py`
+* To auto-start the application on startup add `@/usr/bin/python3 /home/pi/mxklabs-iot-dashboard/app/main.py`
 to the bottom of `/home/pi/.config/lxsession/LXDE-pi/autostart`.
 * To set the brightness of the display set `/sys/class/backlight/rpi_backlight/brightness`
 to a number between `0` (dark) and `255` (bright).
