@@ -95,10 +95,22 @@ with some additional dependencies:
 
 To connect the Huzzah and the Pi simply use a micro USB cable.
 
+Now you should be able to start the monitor with the following command:
+
+```
+python3 /home/pi/mxklabs-iot-dashboard/pi/app/main.py
+```
+
+If you do not have a monitor and you are SSH-ing to the Pi, use the following command line to start the GUI on the Pi:
+
+```
+DISPLAY=:0 /usr/bin/python3 /home/pi/mxklabs-iot-dashboard/pi/app/main.py
+```
+
 ## Post-Installation Tweaks
 
 * To turn your screen upside down add the line `rotate_lcd=2` to the top of `/boot/config.txt`.
-* To auto-start the application on startup add `@/usr/bin/python3 /home/pi/mxklabs-iot-dashboard/app/main.py`
+* To auto-start the application on startup add `@/usr/bin/python3 /home/pi/mxklabs-iot-dashboard/pi/app/main.py`
 to the bottom of `/home/pi/.config/lxsession/LXDE-pi/autostart`.
 * To set the brightness of the display set `/sys/class/backlight/rpi_backlight/brightness`
 to a number between `0` (dark) and `255` (bright).
