@@ -40,6 +40,25 @@ If this is not the case you find some basic guides
 [here](https://www.digikey.com/en/maker/blogs/raspberry-pi-3-how-to-configure-wi-fi-and-bluetooth/03fcd2a252914350938d8c5471cf3b63) and
 [here](https://thepihut.com/blogs/raspberry-pi-tutorials/45295044-raspberry-pi-7-touch-screen-assembly-guide).
 
+## Setting up the Huzzah
+
+In terms of wiring, you need to connect up the following:
+
+| Huzzah pin    | Velleman VMA311 PIN |
+| ------------- | ------------------- |
+| GND           | Pin 0 (right)       |
+| 3v            | Pin 1 (middle)      |
+| Pin 14        | Pin 2 (left)        |
+
+You will also need to connect the Huzzah to your development PC via a micro USB cable. 
+
+* Download [Arduino IDE](https://www.arduino.cc/en/main/software).
+* Configure Arduino IDE using [this guide](https://randomnerdtutorials.com/how-to-install-esp8266-board-arduino-ide/).
+* Load the `huzzah/huzzah.ino` project.
+* Click 'upload'.
+
+If you use the serial monitor at 115200 baud you should now see humidity and temperature readings.
+
 ## Setting up the Pi
 
 Our application requires [Python 3](https://www.python.org/downloads/) (already
@@ -72,21 +91,9 @@ with some additional dependencies:
 
 **NOTE**: *This dependency list may be out of date. If you do try this please let me know either way!*
 
-## Installing this software (mxklabs-pi-calendar)
+## Connecting the Huzzah to the Pi
 
-The easiest way to install our this repository is to use git to clone the source
-code directly from the github repository:
-
-```
-git clone https://github.com/mxklabs/mxklabs-iot-dashboard.git
-```
-
-This puts the source code in `/home/pi/mxklabs-iot-dashboard`. Now, you should be able to
-manually start the application as follows:
-
-```
-python3 mxklabs-iot-dashboard/app/main.py
-```
+To connect the Huzzah and the Pi simply use a micro USB cable.
 
 ## Post-Installation Tweaks
 
