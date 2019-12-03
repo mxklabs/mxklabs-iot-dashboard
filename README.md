@@ -46,9 +46,9 @@ In terms of wiring, you need to connect up the following:
 
 | Huzzah pin    | Velleman VMA311 PIN |
 | ------------- | ------------------- |
-| GND           | Pin 0 (right)       |
-| 3v            | Pin 1 (middle)      |
-| Pin 14        | Pin 2 (left)        |
+| Pin GND       | Pin '-' (right)       |
+| Pin 3v        | Pin '+' (middle)      |
+| Pin 14        | Pin S (left)        |
 
 You will also need to connect the Huzzah to your development PC via a micro USB cable. 
 
